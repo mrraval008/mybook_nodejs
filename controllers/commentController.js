@@ -7,7 +7,6 @@ const AppError = require('../utils/appError')
 const createComments = catchAsync(async(req,res,next)=>{
 
     let comment = await commentModel.create(req.body)
-
     if(!comment){
         let error = new AppError('Unable to Create Comment',501);
         next()
@@ -22,7 +21,9 @@ const createComments = catchAsync(async(req,res,next)=>{
 
 const updateComments = catchAsync(async(req,res,next)=>{
 
-    let comment = await commentModel.findByIdAndUpdate(req.params.id,req.body,{new:true});
+    let comment = await commentModel.findByIdAndUpdate(req.params.id,req.body,{new:true}).populate({
+        path:'commentBy'
+    });
 
     if(!comment){
         let error = new AppError("Not able to update comment",501);

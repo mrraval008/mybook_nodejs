@@ -30,6 +30,20 @@ let postSchema = new mongoose.Schema({
         toObject: { virtuals: true }
     })
 
+
+postSchema.virtual('likes', {
+    ref: "Like",
+    foreignField: 'likedOn',
+    localField: "_id"
+})
+
+
+postSchema.virtual('comments',{
+    ref:'Comments',
+    foreignField:"commentOn",
+    localField:"_id"
+})
+
 //Query middleware
 postSchema.pre(/^find/, function (next) {
 
@@ -47,11 +61,15 @@ postSchema.pre(/^find/, function (next) {
     })
     next()
 })
-postSchema.virtual('likes', {
-    ref: "Like",
-    foreignField: 'likedOn',
-    localField: "_id"
+
+postSchema.pre(/^find/,function(next){
+    this.populate({
+        path:'comments',
+        select:'-__v'
+    })
+    next()
 })
+
 
 const PostModel = new mongoose.model('Post', postSchema, 'posts')   //third argument is the name of collection
 

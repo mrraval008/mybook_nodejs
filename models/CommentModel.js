@@ -9,32 +9,43 @@ const commentSchema = new mongoose.Schema({
         type:String,
         required:[true,'A comment miust have content']
     },
-    createdBy:{
+    commentBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
         required:[true,'A comment must have User']
     },
-    createdOn:{
+    commentOn:{
         type:mongoose.Schema.ObjectId,
         ref:'Post',
         required:[true,'A comment must have post']
+    },
+    modifiedAt:{
+        type:Date,
+        default:Date.now()
     },
     createdAt:{
         type:Date,
         default:Date.now()
     }
+},{
+    toJSON:{virtuals:true},
+    toJSON:{virtuals:true}
 })
-
 
 
 //Query Middleare
 commentSchema.pre(/^find/,function(next){
     this.populate({
-        path:'createdBy',
+        path:'commentBy',
         select:'-__v'
     })
     next();
 })
+
+
+
+
+
 
 const commentModel = new mongoose.model('Comments',commentSchema,'comments')
 

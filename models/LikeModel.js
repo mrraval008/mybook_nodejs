@@ -11,17 +11,17 @@ const likeModelSchema = new mongoose.Schema({
             message:"A like must have valye either of 'like','love','haha','wow','sad' "
         }
     },
-    likedBy:[{
+    likedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
         required:[true,'A like must have user']
-    }],
+    },
     
-    likedOn:[{
+    likedOn:{
         type:mongoose.Schema.ObjectId,
         ref:'Post',
         required:[true,'A like must have post']
-    }]
+    }
  
 })
 

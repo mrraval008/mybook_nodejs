@@ -13,10 +13,9 @@ const helper = require('../utils/helper')
 
 
 const getAllPosts = catchAsync(async (req, res, next) => {
-
     let DBQuery = postModel.find();
     let apiFeatureReq = new APIFeature(DBQuery, req.query).filter().sort().limitFields().pagination()
-    const posts = await apiFeatureReq.DBQuery.populate('likeNumbers');;
+    const posts = await apiFeatureReq.DBQuery;
 
     if (!posts) {
         const err = new AppError('Error in Finding Post', "404")
@@ -29,8 +28,12 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 
 const createPost = catchAsync(async (req, res, next) => {
     let _reqBody = req.body;
-    _reqBody.content = _reqBody.content[0];
-    _reqBody.createdBy = req.user._id ?  req.user._id : "";
+    for(let key in req.body){
+        if(req.body.hasOwnProperty(key) && key != 'images'){
+            _reqBody[key] = req.body[key][0]
+        }
+    }
+    _reqBody.createdBy = req.user && req.user._id ?  req.user._id : "";
     
     const post = await postModel.create(_reqBody);
 

@@ -6,6 +6,10 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const userModel = require('../models/UserModel'); 
 
+const dotenv = require('dotenv');
+dotenv.config({path:'./config.env'});
+
+const Email = require('../controllers/emailController');
 
 
 const signInToken = (id)=>{
@@ -21,21 +25,19 @@ const signUp = catchAsync(async(req,res,next)=>{
     if(!user){
         const err = new AppError("Not able to create user",501);
     }
+    const url = `http://localhost:4200/profile/${user.slug}`;
+    await new Email(user,url).sendWelcome();
 
     const token = signInToken(user._id);
 
     res.status(200).json({
         status:'success',
-        data:{
-            token:"tokne",
-            user
-        }
+        data:{user,token}
     })
 
 })
 
 const logIn = catchAsync(async (req,res,next)=>{
-
     const {email,password} = req.body;
 
     if(!email || !password){
@@ -107,6 +109,26 @@ const updateMypassword = catchAsync(async(req,res,next)=>{
     })
 })
 
+
+const isLoggedIn = catchAsync(async (req,res,next)=>{
+    
+    let token;
+    if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
+        token = req.headers.authorization.split(" ")[1];
+    }
+    let decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
+    let currentUser = await userModel.findById(decoded.id)   //decoded.id is user ID
+
+    // if(currentUser && currentUser.isUserhasChangePassword(decoded.iat)){
+    //     currentUser = ""
+    // }
+    
+    res.status(200).json({
+        status:"success",
+        user:currentUser
+    })
+})
+
 // const confirmUserAndPassowrd = (user,next)
 
 
@@ -116,5 +138,6 @@ module.exports = {
     signUp,
     logIn,
     protect,
-    updateMypassword
+    updateMypassword,
+    isLoggedIn
 }

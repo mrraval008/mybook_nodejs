@@ -13,11 +13,22 @@ class APIFeature{
     }
 
     filter(){
-
-        let _query = { ...this.query }
-
-        this.excludeFields(_query);
-        this.DBQuery.find(_query)
+        if(this.query){
+            for(let key in this.query){
+                let val = this.query[key]
+                if(val.startsWith("{") && val.endsWith("}")){
+                    this.query[key] = JSON.parse(val);
+                }
+                if(val.includes("/&")){
+                    val = val.split("/&")[0];
+                    this.query[key] =  new RegExp(val,'i');
+                }
+            }
+            let _query = { ...this.query }
+            this.excludeFields(_query);
+            this.DBQuery.find(_query)
+        }
+       
         return this
     }
 
