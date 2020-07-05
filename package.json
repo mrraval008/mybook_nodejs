@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "author": "Milan",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.2.0",
     "aws-sdk": "^2.683.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -18,9 +19,11 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.14",
     "multiparty": "^4.2.1",
+    "nodemailer": "^6.4.10",
     "nodemon": "^2.0.4",
     "promisify": "0.0.3",
     "slugify": "^1.4.0",
+    "socket.io": "^2.3.0",
     "validator": "^13.0.0"
   }
 }

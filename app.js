@@ -5,6 +5,12 @@ const cors = require('cors')
 
 app.use(cors())
 
+app.use((req, res, next) => {
+   console.log(req.url)
+    next();
+});
+
+
 app.use(express.json({limit:'10kb'}))   //body parser
 
 
@@ -25,6 +31,7 @@ app.use('/api/v1/likes',likeRouter)
 app.use(express.static(`${__dirname}/public`))
 
 app.all('*',(req,res,next)=>{
+    console.log(req.url)
     res.send(`this route is not handled yet`)
 })
 

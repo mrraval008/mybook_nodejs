@@ -47,8 +47,8 @@ const deleteLike = catchAsync( async(req,res,next)=>{
 const updateLike = catchAsync( async (req,res,next)=>{
     const id = req.params.id;
     const _reqBody = req.body;
-    const like = await likeModel.findByIdAndUpdate(id,_reqBody);
-
+    
+    const like = await likeModel.findByIdAndUpdate(id,_reqBody,{new :true});
     if(!like){
         return next(new AppError(`Unable to update like with id ${id}`,404));
     }

@@ -20,16 +20,22 @@ const userSchema = new mongoose.Schema({
     },
     profilePic:{
         type:String,
-        default:'default.jpg'
+        default:'https://mybookproject.s3.ap-south-1.amazonaws.com/users/default.jpg'
     },
     coverPic:{
-        type:String
+        type:String,
+        default:'https://mybookproject.s3.ap-south-1.amazonaws.com/users/cover_placeholder.png'
+        
     },
     password:{
         type:String,
         required:true,
         minlength:8,
         select:false,
+    },
+    isOnline:{
+        type:String,
+        default:"false"
     },
     confirmPassword:{
         type:String,
@@ -53,12 +59,16 @@ const userSchema = new mongoose.Schema({
     },
     passwordChangedAt:{
         type:Date
+    },
+    notifications:{
+        type:Array
     }
 })
 
+
 //document middleware
 userSchema.pre('save',function(next){
-    this.slug = slugify(this.name,{lower:true})
+    this.slug = slugify(this.name,{lower:true}) + "." +Math.floor((Math.random() * 100) + 1);
     next();
 })
 
