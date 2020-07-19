@@ -35,7 +35,11 @@ const createPost = catchAsync(async (req, res, next) => {
     }
     _reqBody.createdBy = req.user && req.user._id ?  req.user._id : "";
     
-    const post = await postModel.create(_reqBody);
+    let post = await postModel.create(_reqBody);
+    post  = await post.populate({
+        path: 'createdBy',
+        select: '-__v'
+    }).execPopulate()
 
     if (!post) {
         const err = new AppError(`Unable to Create Post`, "501")
