@@ -115,10 +115,14 @@ const isLoggedIn = catchAsync(async (req,res,next)=>{
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         token = req.headers.authorization.split(" ")[1];
+    }else if (req.cookies.jwt) {
+        token = req.cookies.jwt
     }
     let decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
     let currentUser = await userModel.findById(decoded.id)   //decoded.id is user ID
-
+    if (!currentUser) {
+        return next();
+    }
     // if(currentUser && currentUser.isUserhasChangePassword(decoded.iat)){
     //     currentUser = ""
     // }
